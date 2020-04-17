@@ -16,7 +16,7 @@ class Worker(Person): #Defining our first subclass with it functions
      def get_field(self):
          return self.field
      def salary_rise(self,add_to_salary):
-         self.salary+=add_to_salary
+         self.salary= max (add_to_salary + self.salary, 0)
          print ('Salary rise! %s %s is now earning %d $' %(self.firstname,self.lastname,self.salary))
      def change_career(self,new_field):
          self.field=new_field
