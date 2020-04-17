@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-#from dfply import *
+from dfply import *
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr
 from sklearn.metrics import mean_squared_error
@@ -60,9 +60,6 @@ def consumption_sigmoid(t, real_conso, a = 900, b = -35, c = 6, d = 300, plot = 
     h_hat = np.empty(len(t))
     for i in range(len(t)):
        h_hat[i] = h(t[i], a, b, c, d)
-    print ("t",t)
-    print ("h", h_hat)
-
     if plot:
         plt.plot(t, h_hat, c= 'yellow',label='Gas consumption using the sigmoid function as a function of Actual temperature')
         plt.xlabel('Actual tempartures (in °C)')
@@ -100,8 +97,6 @@ def get_fit_metrics(h_hat, real_conso):
         RMSE = np.sqrt (RMSE/n)
         averageValueConsumption /= n
         R2 = r2_score(h_hat, LDZ)
-        print ("h-hat",h_hat)
-        print ("ldz",LDZ)
 
 
         print ('R^2 = ', R2)
@@ -137,8 +132,8 @@ class consumption:
 
     #This is what the class print if you use the print function on it
     def __str__(self):
-        print ("a : ", self.a ,"b : ",self.b , "c : ",self.c ,"d : ",self.d  )
-        t = "work in progress"
+        print ('\n'"a : ", self.a ,"b : ",self.b , "c : ",self.c ,"d : ",self.d  )
+        t = "Print Consumption"
         return t
 
 #The following class optimizes the parameters of the sigmoid and returns an object of class consumption
@@ -192,7 +187,7 @@ class optimize_sigmoid:
         t = "Print optimize sigmoid"
         if self.__corr is not None:
 
-            print ("a : ", self.__coef[0], "b : ", self.__coef[1],"a : ", self.__coef[2],"a : ", self.__coef[3])
+            print ('\n', "a : ", self.__coef[0], "b : ", self.__coef[1],"a : ", self.__coef[2],"a : ", self.__coef[3])
             print ("R**2 : ",self.__corr, "RMSE : ",self.__rmse,"Normalized RMSE : ",self.__nrmse,"Normalized Average RMSE : ",self.__anrmse)
 
         else:
@@ -203,7 +198,7 @@ class optimize_sigmoid:
 if __name__ == '__main__':
 
     #set working directory
-    set_wd("/Data")
+    set_wd("Data")
 
     #1) import consumption data and plot it
     conso = import_csv()
