@@ -60,8 +60,8 @@ def consumption_sigmoid(t, real_conso, a = 900, b = -35, c = 6, d = 300, plot = 
     h_hat = np.empty(len(t))
     for i in range(len(t)):
        h_hat[i] = h(t[i], a, b, c, d)
-    print ("t",t)
-    print ("h", h_hat)
+#    print ("t",t)
+#    print ("h", h_hat)
 
     if plot:
         plt.plot(t, h_hat, c= 'yellow')
@@ -92,8 +92,8 @@ def get_fit_metrics(h_hat, real_conso):
         RMSE = np.sqrt (RMSE/n)
         averageValueConsumption /= n
         R2 = r2_score(h_hat, LDZ)
-        print ("h-hat",h_hat)
-        print ("ldz",LDZ)
+#        print ("h-hat",h_hat)
+#        print ("ldz",LDZ)
         
         
         print ('R^2 = ', R2)
@@ -130,7 +130,7 @@ class consumption:
     #This is what the class print if you use the print function on it
     def __str__(self):
         print ("a : ", self.a ,"b : ",self.b , "c : ",self.c ,"d : ",self.d  )
-        t = "work in progress"
+        t = "Print consumption"
         return t
 
 #The following class optimizes the parameters of the sigmoid and returns an object of class consumption
@@ -186,7 +186,7 @@ class optimize_sigmoid:
             
             print ("a : ", self.__coef[0], "b : ", self.__coef[1],"a : ", self.__coef[2],"a : ", self.__coef[3])
             print ("R**2 : ",self.__corr, "RMSE : ",self.__rmse,"Normalized RMSE : ",self.__nrmse,"Normalized Average RMSE : ",self.__anrmse)
-            
+#            t = [( self.__coef[0], self.__coef[1], self.__coef[2], self.__coef[3]), (self.__corr,self.__rmse,self.__nrmse,self.__anrmse)]
         else:
             t = "optimize method is not yet run"
         return t
@@ -209,7 +209,7 @@ if __name__ == '__main__':
     sig = optimize_sigmoid(conso)
     sig.optimize()
     c = sig.create_consumption()
-    print(sig)
+#    print(sig)
 
 
     #2)3. check the new fit

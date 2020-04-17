@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from dfply import *
+#from dfply import *
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr
 from sklearn.metrics import mean_squared_error
@@ -203,7 +203,7 @@ class optimize_sigmoid:
 if __name__ == '__main__':
 
     #set working directory
-    set_wd(r"C:\Users\Nathalie\Documents\ENSTA\IN104\Projet")
+    set_wd("/Data")
 
     #1) import consumption data and plot it
     conso = import_csv()
