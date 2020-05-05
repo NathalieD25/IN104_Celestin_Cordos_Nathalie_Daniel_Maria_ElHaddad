@@ -74,6 +74,9 @@ for k, v in storage_data.items():
         X = dataFrame[feature_cols] # Features
         y = dataFrame['Net Withdrawal binary'] # Target variable
         
+        #creating empty dictionnaries
+        model1=dict() #for the logistic regression 
+        model2=dict() #for the random forest 
         
         lr.fit(X, y)
         
