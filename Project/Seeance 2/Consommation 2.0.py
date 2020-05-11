@@ -16,6 +16,8 @@ sns.set()
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 import numpy as np
+pd.options.mode.chained_assignment = None
+import sklearn.metrics as metrics
 ##Random forest moduls 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
