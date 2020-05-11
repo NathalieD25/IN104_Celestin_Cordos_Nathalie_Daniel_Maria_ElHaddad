@@ -21,6 +21,7 @@ import sklearn.metrics as metrics
 ##Random forest moduls 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression
 
 import itertools
 
@@ -36,6 +37,7 @@ price_data.rename(columns={'Date':'gasDayStartedOn '}, inplace=True)
 model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
 #for the random forest 
 model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
+dict_regression = dict ()
 
 
 ###################### LOGISTIC REGRESSION #######################
@@ -191,6 +193,56 @@ for k, v in storage_data.items():
         y = np.array(dataFrame['Net Withdrawal binary']) # Target variable
         model1[k]=Logistic_Regression(x,y)
         model2[k]=random_forest(x,y)
+        
+        
+        
+        
+################REGRESSION###############
+        X = dataFrame[feature_cols] # Features
+        y = dataFrame['Net Withdrawal'] # Target variable
+
+       
+        
+        
+        #plt.figure(figsize=(15,10))
+        #plt.tight_layout()
+        #seabornInstance.distplot(dataset['quality'])
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+        
+        regressor = LinearRegression()  
+        regressor.fit(X_train, y_train)
+        
+        coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
+        coeff_df
+        
+        y_pred = regressor.predict(X_test)
+        
+        df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+        df1 = df.head(25)
+        
+        df1.plot(kind='bar',figsize=(10,8))
+        plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+        plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+        plt.show()
+        
+        
+        RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_pred))
+        
+        n = len (y_test)
+        averageValueConsumption = 0
+        minValue = min (y_test)
+        for i in range (n):
+            averageValueConsumption += y_test.values[i]
+            
+        
+        averageValueConsumption /= n
+        
+        ANRMSE = RMSE/averageValueConsumption
+        NRMSE = RMSE/(averageValueConsumption - minValue)
+        r2 = metrics.r2_score(y_test, y_pred)
+        d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE}#pas complet des choses à comprendre et à completer
+        dict_regression[k] = d_regression
         
         
 
