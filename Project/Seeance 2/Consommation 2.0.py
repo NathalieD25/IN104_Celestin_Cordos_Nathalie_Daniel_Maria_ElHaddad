@@ -28,6 +28,8 @@ price_data.rename(columns={'Date':'gasDayStartedOn '}, inplace=True)
 #creating empty dictionnaries
 model1=dict() #for the logistic regression 
 model2=dict() #for the random forest
+regression = dict ()
+
 
 lr = LogisticRegression()
 
@@ -86,7 +88,7 @@ for k, v in storage_data.items():
         print(lr.intercept_)
         
         
-X_test = 
+
 #y_pred = lr.predict(x_test)
 #
 #confusion_matrix(y_test, y_pred)
