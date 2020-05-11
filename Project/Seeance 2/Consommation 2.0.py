@@ -14,12 +14,12 @@ from sklearn.linear_model import LogisticRegression
 import seaborn as sns
 sns.set()
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
+from sklearn import metrics
 import numpy as np
 ##Random forest moduls 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, roc_auc_score, roc_curve
+
 import itertools
 
 seuil =45
@@ -44,7 +44,7 @@ def Logistic_Regression(x,y):
     print(lr.coef_)
     print(lr.intercept_)
     y_pred = lr.predict(x_test)
-    cm=confusion_matrix(y_test, y_pred)
+    cm=metrics.confusion_matrix(y_test, y_pred)
     lr.predict_proba(x_test)
     df = pd.DataFrame({'x': x_test[:,0], 'y': y_test})
     df = df.sort_values(by='x')
