@@ -16,6 +16,8 @@ sns.set()
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import numpy as np
+pd.options.mode.chained_assignment = None
+import sklearn.metrics as metrics
 ##Random forest moduls 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -133,6 +135,7 @@ def random_forest(x,y):
     # Calculate false positive rates and true positive rates
         base_fpr, base_tpr, _ = roc_curve(test_labels, [1 for _ in range(len(test_labels))])
         model_fpr, model_tpr, _ = roc_curve(test_labels, probs)
+    cm = confusion_matrix(test_labels, rf_predictions)
     d2= {"recall": metrics.recall_score(test_labels, rf_predictions), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]), "confusion": cm,"precision": metrics.precision_score(test_labels, rf_predictions), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(test_labels, rf_predictions)}
     return d2
 ###############END OF THE RANDOM FOREST PROGRAM ###################################
