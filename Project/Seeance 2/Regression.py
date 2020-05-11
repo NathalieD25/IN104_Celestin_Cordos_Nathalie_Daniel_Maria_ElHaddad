@@ -20,6 +20,7 @@ price_data = pd.read_csv('price_data.csv', sep = ';')
 price_data.rename(columns={'Date':'gasDayStartedOn '}, inplace=True)
 
 seuil =45 #pour FSW. Fixe normalement mais si jamais on veut le changer...
+dict_regression = dict ()
 
 
 for k, v in storage_data.items():
@@ -109,3 +110,5 @@ for k, v in storage_data.items():
         ANRMSE = RMSE/averageValueConsumption
         NRMSE = RMSE/(averageValueConsumption - minValue)
         r2 = metrics.r2_score(y_test, y_pred)
+        d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE}#pas complet des choses à comprendre et à completer
+        dict_regression[k] = d_regression
