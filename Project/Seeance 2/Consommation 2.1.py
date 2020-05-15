@@ -22,9 +22,9 @@ import sklearn.metrics as metrics
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
-
+import dfply
 import itertools
-
+import scipy
 
 
 
@@ -37,38 +37,40 @@ class Supply ():
         Supply.dict_regression = dict () #model 3
     
     def create_fsw1 (self, row):
-        return  max (row['full'] - seuil, 0)
+        return  max (row['full'] - self.seuil, 0)
     
     def create_fsw2 (self, row):
-        return max (- dataFrame['full'] + seuil, 0)
+        return max (- row['full'] + self.seuil, 0)
     
-    def create_binary (self, row):
+    def create_binary_nw (self, row):
         if row['NW'] > 0:
             return 1
+        else:
+            return 0
         
     
     
     
-    def split_fs(f, p):
-        f = f >> mutate(self, NW = -X.injection + X.withdrawal)
+    def split_fs(self, f, p):
+        f = f >> dfply.mutate( NW = -f.injection + f.withdrawal)
         f['NW_Lagged'] = f['NW'].shift(1)
-        f['FSW1'] = f.apply (create_fsw1, axis=1)
-        f['FSW2'] = f.apply (create_fsw2, axis=1)
+        f['FSW1'] = f.apply (self.create_fsw1, axis=1)
+        f['FSW2'] = f.apply (self.create_fsw2, axis=1)
         
         ##pas compris à quoi ca servait; on les avait pas avant
         '''f['FSI1'] = f.apply (create_fsi1, axis=1)
         f['FSI2'] = f.apply (create_fsi2, axis=1)'''
-        f['NW_b'] = f.apply (create_binary_nw, axis=1)
-        f = (f >> inner_join(p, by='gasDayStartedOn') >> drop(0, 2, 3, 4, 5, 6, 7, 8, 9, 10)).dropna()
+        f['NW_b'] = f.apply (self.create_binary_nw, axis=1)
+        f =  pd.merge(f,p, on='gasDayStartedOn', how= 'inner').dropna()
         return f
 
     
     def initialisation_data (self, s = 'storage_data.xlsx', p = 'price_data.csv'):
         storage_data = pd.read_excel(s, sheet_name=None)
-        price_data = pd.read_csv(p)
+        price_data = pd.read_csv(p, sep = ';')
         price_data.rename(columns={'Date':'gasDayStartedOn'}, inplace=True)
         price_data['gasDayStartedOn'] = pd.to_datetime(price_data['gasDayStartedOn'])
-        storage_data = {k: split_fs(v, price_data) for k, v in storage_data.items()}
+        storage_data = {k: self.split_fs(v, price_data) for k, v in storage_data.items()}
         return storage_data
     
 
@@ -77,7 +79,7 @@ class Supply ():
 
 
 ###################### LOGISTIC REGRESSION #######################
-    def Logistic_Regression(x,y):
+    def Logistic_Regression(self, x,y):
         x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1)
         lr = LogisticRegression()
         lr.fit(x_train, y_train)
@@ -100,7 +102,7 @@ class Supply ():
 
 ##########RANDOM FOREST PROGRAM #######################
 ######RANDOM FOREST###############
-    def random_forest(x,y):
+    def random_forest(self, x,y):
         RSEED = 50
         train, test, train_labels, test_labels = train_test_split(x,y,test_size = 0.2, random_state = RSEED)
     
@@ -187,7 +189,7 @@ class Supply ():
 
     def main (self):
         storage_data = self.initialisation_data ()
-        for k, v in self.storage_data.items():
+        for k, v in storage_data.items():
             dataFrame = storage_data [k]
             
             
@@ -198,16 +200,17 @@ class Supply ():
             feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
             x = np.array(dataFrame[feature_cols]) # Features
             y = np.array(dataFrame['NW_b']) # Target variable
-            model1[k]=Logistic_Regression(x,y)
-            model2[k]=random_forest(x,y)
+            self.model1[k]=self.Logistic_Regression(x,y)
+            self.model2[k]=self.random_forest(x,y)
         
     
         
         
     
     ################REGRESSION###############
+            dataFrame = dataFrame[dataFrame.NW_b != 0]
             X = dataFrame[feature_cols] # Features
-            storage = storage[storage.NW_b != 0]
+            X.dropna()
             y = dataFrame['NW'] # Target variable
         
            
@@ -217,7 +220,7 @@ class Supply ():
             #plt.tight_layout()
             #seabornInstance.distplot(dataset['quality'])
             
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0) #probleme: si on met 0.2 au lieu de 0.3, dans le y_train, il n'y a que 1 classe; fit () refuse de marcher
             
             regressor = LinearRegression()  
             l_reg = regressor.fit(X_train, y_train)
@@ -238,12 +241,13 @@ class Supply ():
             RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_pred))   
             averageValueConsumption = np.mean (y_test)
             maxValueConsumption = np.max (y_test)
+            minValueConsumption = np.min (y_test)
             ANRMSE = RMSE/averageValueConsumption
-            NRMSE = RMSE/(maxValueConsumption - minValue)
+            NRMSE = RMSE/(maxValueConsumption - minValueConsumption)
             r2 = metrics.r2_score(y_test, y_pred)
-            corr = pearsonr(y_test, y_pred)[0]
+            corr = scipy.stats.pearsonr(y_test, y_pred)[0]
             d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr, 'l_reg':l_reg }
-            Supply.dict_regression[k] = d_regression
+            self.dict_regression[k] = d_regression
         
         
 
