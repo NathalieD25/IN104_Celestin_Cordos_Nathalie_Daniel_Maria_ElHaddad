@@ -28,13 +28,13 @@ import itertools
 
 
 
-class Demand ():
+class Supply ():
     def __init__ (self):
-        Demand.seuil = 45
-        Demand.model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
+        Supply.seuil = 45
+        Supply.model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
         #for the random forest 
-        Demand.model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
-        Demand.dict_regression = dict () #model 3
+        Supply.model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
+        Supply.dict_regression = dict () #model 3
     
     def create_fsw1 (self, row):
         return  max (row['full'] - seuil, 0)
@@ -187,7 +187,7 @@ class Demand ():
 
     def main (self):
         storage_data = self.initialisation_data ()
-        for k, v in demand.storage_data.items():
+        for k, v in self.storage_data.items():
             dataFrame = storage_data [k]
             
             
@@ -243,11 +243,11 @@ class Demand ():
             r2 = metrics.r2_score(y_test, y_pred)
             corr = pearsonr(y_test, y_pred)[0]
             d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr, 'l_reg':l_reg }
-            Demand.dict_regression[k] = d_regression
+            Supply.dict_regression[k] = d_regression
         
         
 
 
 if __name__ == '__main__':
-    demand = Demand ()
-    demand.main ()
+    supply = Supply ()
+    supply.main ()
