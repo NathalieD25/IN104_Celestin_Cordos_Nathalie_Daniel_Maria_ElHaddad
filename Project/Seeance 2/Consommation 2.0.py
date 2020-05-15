@@ -25,19 +25,35 @@ from sklearn.linear_model import LinearRegression
 
 import itertools
 
+def split_fs(f, p):
+    f = f >> mutate(NW = -X.injection + X.withdrawal)
+    f['FSW1'] = f.apply (create_fsw1, axis=1)
+    f['FSW2'] = f.apply (create_fsw2, axis=1)
+    f['FSI1'] = f.apply (create_fsi1, axis=1)
+    f['FSI2'] = f.apply (create_fsi2, axis=1)
+    f['NW_b'] = f.apply (create_binary_nw, axis=1)
+    f = (f >> inner_join(p, by='gasDayStartedOn') >> drop(0, 2, 3, 4, 5, 6, 7, 8, 9, 10)).dropna()
+    return f
+
+#fonction initialisation
 seuil =45
+def initialisation_data (s = 'storage_data.xlsx', p = 'price_data.csv'):
+    storage_data = pd.read_excel(s, sheet_name=None)
+    price_data = pd.read_csv(p)
+    price_data.rename(columns={'Date':'gasDayStartedOn'}, inplace=True)
+    price_data['gasDayStartedOn'] = pd.to_datetime(price_data['gasDayStartedOn'])
+    storage_data = {k: split_fs(v, price_data) for k, v in storage_data.items()}
+    return storage_data
+    
 
-storage_data = pd.read_excel("storage_data.xlsx", sheet_name=None)
-price_data = pd.read_csv('price_data.csv')
-price_data.rename(columns={'Date':'gasDayStartedOn '}, inplace=True)
-
-#creating empty dictionnaries
-#creating empty dictionnaries
-#for the logistic regression
-model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
-#for the random forest 
-model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
-dict_regression = dict () #model 3
+    #creating empty dictionnaries
+    #creating empty dictionnaries
+    #for the logistic regression
+    model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
+    #for the random forest 
+    model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
+    dict_regression = dict () #model 3
+    
 
 
 ###################### LOGISTIC REGRESSION #######################
@@ -66,7 +82,7 @@ def Logistic_Regression(x,y):
 ######RANDOM FOREST###############
 def random_forest(x,y):
     RSEED = 50
-    train, test, train_labels, test_labels = train_test_split(x,y,test_size = 0.3, random_state = RSEED)
+    train, test, train_labels, test_labels = train_test_split(x,y,test_size = 0.2, random_state = RSEED)
 
 # Imputation of missing values
     train = np.nan_to_num(train)
@@ -138,7 +154,12 @@ def random_forest(x,y):
         base_fpr, base_tpr, _ = roc_curve(test_labels, [1 for _ in range(len(test_labels))])
         model_fpr, model_tpr, _ = roc_curve(test_labels, probs)
     cm = metrics.confusion_matrix(test_labels, rf_predictions)
-    d2= {"recall": metrics.recall_score(test_labels, rf_predictions), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]), "confusion": cm,"precision": metrics.precision_score(test_labels, rf_predictions), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(test_labels, rf_predictions)}
+    d2= {"recall": metrics.recall_score(test_labels, rf_predictions), 
+         "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]), 
+         "confusion": cm,
+         "precision": metrics.precision_score(test_labels, rf_predictions), 
+         "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
+         "roc": metrics.roc_auc_score(test_labels, rf_predictions)} #ajouter le modele 
     return d2
 ###############END OF THE RANDOM FOREST PROGRAM ###################################
 
@@ -194,6 +215,7 @@ for k, v in storage_data.items():
         model1[k]=Logistic_Regression(x,y)
         model2[k]=random_forest(x,y)
         
+        #ajouter fonction pour comprarer et choisir le meilleur
         
         
         
@@ -211,7 +233,7 @@ for k, v in storage_data.items():
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
         
         regressor = LinearRegression()  
-        regressor.fit(X_train, y_train)
+        l_reg = regressor.fit(X_train, y_train)
         
         coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
         coeff_df
@@ -226,7 +248,7 @@ for k, v in storage_data.items():
         plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
         plt.show()
         
-        
+        #np.mean ()
         RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_pred))
         
         n = len (y_test)
@@ -237,11 +259,11 @@ for k, v in storage_data.items():
             
         
         averageValueConsumption /= n
-        
+        maxValueConsumption = np.max (y_test)
         ANRMSE = RMSE/averageValueConsumption
-        NRMSE = RMSE/(averageValueConsumption - minValue)
+        NRMSE = RMSE/(maxValueConsumption - minValue)
         r2 = metrics.r2_score(y_test, y_pred)
-        d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE}#pas complet des choses à comprendre et à completer
+        d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'l_reg':l_reg }#pas complet des choses à comprendre et à completer
         dict_regression[k] = d_regression
         
         
