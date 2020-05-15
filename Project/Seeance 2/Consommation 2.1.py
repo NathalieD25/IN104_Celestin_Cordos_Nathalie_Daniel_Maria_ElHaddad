@@ -183,6 +183,27 @@ class Supply ():
              "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
              "roc": metrics.roc_auc_score(test_labels, rf_predictions)} #ajouter le modele 
         return d2
+    
+    
+    def method_comparison(self, d1,d2):
+        rf=0 #compter le nombre de metrics ou la method random forest correspond mieux
+        lgr=0 #compter le nombre de metrics ou la regression lineaire correspond mieux 
+        for k in d1.keys()-{'class_mod'}-{'confusion'}-{'method name'}:
+            if d1[k]>d2[k]:
+                if d1['method name']=='linear regression':
+                    lgr+=1
+                if d1['method name']=='random forest':
+                    rf+=1
+            else:
+                if d2['method name']=='linear regression':
+                    lgr+=1
+                if d2['method name']=='random forest':
+                    rf+=1
+        if lgr>rf:
+            method='logistic regression'
+        else:
+            method='random forest'
+        return method 
 ###############END OF THE RANDOM FOREST PROGRAM ###################################
 
 
@@ -202,7 +223,15 @@ class Supply ():
             y = np.array(dataFrame['NW_b']) # Target variable
             self.model1[k]=self.Logistic_Regression(x,y)
             self.model2[k]=self.random_forest(x,y)
-        
+             ##Dans le programme principal
+ 
+            #A rajouter a l'interieur de la boucle for sur les storages 
+            c1=0 ###compteur pour la methode logistic regression
+            c2=0 ##compteur pour la methode Random forest
+            if self.method_comparison(self.model1[k],self.model2[k])=='logistic regression':
+                c1+=1
+            else:
+                c2+=1
     
         
         
@@ -248,6 +277,13 @@ class Supply ():
             corr = scipy.stats.pearsonr(y_test, y_pred)[0]
             d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr, 'l_reg':l_reg }
             self.dict_regression[k] = d_regression
+        
+        
+        #comparaison des modeles
+        if c1>c2:
+            print ("The logistic regression is better")
+        if c2>c1:
+            print ("The random forest is better")
         
         
 
