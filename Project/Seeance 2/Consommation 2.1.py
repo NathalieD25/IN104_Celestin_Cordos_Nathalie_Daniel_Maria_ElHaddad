@@ -94,7 +94,7 @@ class Supply ():
         sigmoid_function = expit(df['x'] * lr.coef_[0][0] + lr.intercept_[0]).ravel()
         plt.plot(df['x'], sigmoid_function)
         plt.scatter(df['x'], df['y'], c=df['y'], cmap='rainbow', edgecolors='b')
-        d = {'recall': metrics.recall_score(y_test, y_pred), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]),"confusion": cm,"precision": metrics.precision_score(y_test, y_pred), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(y_test,y_pred),"class_mod":lr}
+        d = {'recall': metrics.recall_score(y_test, y_pred), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]),"confusion": cm,"precision": metrics.precision_score(y_test, y_pred), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(y_test,y_pred),"class_mod":lr,"method name": 'logistic regression'}
         return d 
 ####################END OF THE LOGISTIC REGRESSION #############################
 
@@ -181,7 +181,7 @@ class Supply ():
              "confusion": cm,
              "precision": metrics.precision_score(test_labels, rf_predictions), 
              "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
-             "roc": metrics.roc_auc_score(test_labels, rf_predictions)} #ajouter le modele 
+             "roc": metrics.roc_auc_score(test_labels, rf_predictions),"method name": 'random forest'} #ajouter le modele 
         return d2
     
     
