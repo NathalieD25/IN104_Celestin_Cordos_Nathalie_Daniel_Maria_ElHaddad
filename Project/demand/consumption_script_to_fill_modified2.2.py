@@ -249,6 +249,12 @@ if __name__ == '__main__':
     c.sigmoid(True)
     print(c)
     
+    #Added on 5/17/2020
+    #creating an array with the coefficients of the sigmoid
+    sigmoid_coeff=consumption(c.a,c.b,c.c,c.d)
+    Demand=consumption.get_consumption(sigmoid_coeff,conso['Actual'])
+    data = {'Date':conso['Date'], 'Demand':Demand}
+    df=pd.DataFrame(data)
     #3) If time allows do TSA on actual temperature
     #3)1. Check trend (and Remove it)
     #3)2. Check Seasonality (Normal Temperature)
