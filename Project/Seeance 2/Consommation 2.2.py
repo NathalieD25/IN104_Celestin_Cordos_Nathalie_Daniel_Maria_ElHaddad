@@ -75,7 +75,7 @@ class Classification ():
         self.model1={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
         #for the random forest 
         self.model2={"SF - UGS Rehden": {} ,"SF - UGS Kraak": {},"SF - UGS Stassfut" :{},"SF - UGS Harsefeld" :{},"SF - UGS Breitburnn" : {}, "SF - UGS Epe Uniper H-Gas" : {}, "SF - UGS Eschenfelden" : {}, "SF - UGS Inzeham-West ": {}, "SF - UGS Bierwang" : {}, "SF - UGS Jemgum H (EWE)" : {}, "SF - UGS Peckensen" : {}, " SF - UGS Peckensen " : {}, " SF  -UGS Etzel ESE (Uniper Ener) " : {} }  
-        self.coefficients = dict () #sera un dictionnaire de dictionnaire. le premier aura les cles 'sotrage1', 'storage2' et les autres 'regression' et 'random forest'
+        self.coefficients = dict () #sera un dictionnaire de dictionnaire. le premier aura les cles 'sotrage1', 'storage2' et les autres 'logistic_regression' et 'random_forest'
     
 
     
@@ -101,7 +101,7 @@ class Classification ():
         plt.plot(df['x'], sigmoid_function)
         plt.scatter(df['x'], df['y'], c=df['y'], cmap='rainbow', edgecolors='b')
         d = {'recall': metrics.recall_score(y_test, y_pred), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]),"confusion": cm,"precision": metrics.precision_score(y_test, y_pred), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(y_test,y_pred),"class_mod":lr,"method name": 'logistic regression'}
-        return d 
+        return d, lr.coef_ 
 ####################END OF THE LOGISTIC REGRESSION #############################
 
 
@@ -188,7 +188,7 @@ class Classification ():
              "precision": metrics.precision_score(test_labels, rf_predictions), 
              "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
              "roc": metrics.roc_auc_score(test_labels, rf_predictions),"method name": 'random forest'} #ajouter le modele 
-        return d2
+        return d2, model.feature_importances_
     
     
     def method_comparison(self, d1,d2):
@@ -216,6 +216,8 @@ class Classification ():
 
     def main (self):
         storage_data = self.Storages
+        c1=0 ###compteur pour la methode logistic regression
+        c2=0 ##compteur pour la methode Random forest
         for k, v in storage_data.items():
             dataFrame = storage_data [k]
             
@@ -227,11 +229,9 @@ class Classification ():
             feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
             x = np.array(dataFrame[feature_cols]) # Features
             y = np.array(dataFrame['NW_b']) # Target variable
-            self.model1[k]=self.Logistic_Regression(x,y)
-            self.model2[k]=self.random_forest(x,y)
-             ##Dans le programme principal
- 
-            #A rajouter a l'interieur de la boucle for sur les storages 
+            self.model1[k], logistic_regression_coeff =self.Logistic_Regression(x,y)
+            self.model2[k], random_forest_coef =self.random_forest(x,y)
+            self.coefficients [k] = {'logistic_regression':logistic_regression_coeff, 'random_forest':random_forest_coef }
             c1=0 ###compteur pour la methode logistic regression
             c2=0 ##compteur pour la methode Random forest
             if self.method_comparison(self.model1[k],self.model2[k])=='logistic regression':
@@ -297,6 +297,7 @@ class Regression ():
             corr = scipy.stats.pearsonr(y_test, y_pred)[0]
             d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr, 'l_reg':l_reg }
             self.dict_regression[k] = d_regression
+            self.coefficients[k] = coeff_df
         
         
         
@@ -311,3 +312,4 @@ if __name__ == '__main__':
     regression = Regression ()
     classification.main ()
     regression.main()
+    global X,y
