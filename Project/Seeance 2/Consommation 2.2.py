@@ -101,7 +101,7 @@ class Classification ():
         plt.plot(df['x'], sigmoid_function)
         plt.scatter(df['x'], df['y'], c=df['y'], cmap='rainbow', edgecolors='b')
         d = {'recall': metrics.recall_score(y_test, y_pred), "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]),"confusion": cm,"precision": metrics.precision_score(y_test, y_pred), "neg_precision":cm[1,1]/cm.sum(axis=1)[1], "roc": metrics.roc_auc_score(y_test,y_pred),"class_mod":lr,"method name": 'logistic regression'}
-        return d, lr.coef_ 
+        return d, lr 
 ####################END OF THE LOGISTIC REGRESSION #############################
 
 
@@ -188,7 +188,7 @@ class Classification ():
              "precision": metrics.precision_score(test_labels, rf_predictions), 
              "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
              "roc": metrics.roc_auc_score(test_labels, rf_predictions),"method name": 'random forest'} #ajouter le modele 
-        return d2, model.feature_importances_
+        return d2, model
     
     
     def method_comparison(self, d1,d2):
@@ -229,9 +229,9 @@ class Classification ():
             feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
             x = np.array(dataFrame[feature_cols]) # Features
             y = np.array(dataFrame['NW_b']) # Target variable
-            self.model1[k], logistic_regression_coeff =self.Logistic_Regression(x,y)
-            self.model2[k], random_forest_coef =self.random_forest(x,y)
-            self.coefficients [k] = {'logistic_regression':logistic_regression_coeff, 'random_forest':random_forest_coef }
+            self.model1[k], logistic_regression_model =self.Logistic_Regression(x,y)
+            self.model2[k], random_forest_model =self.random_forest(x,y)
+            self.coefficients [k] = {'logistic_regression':logistic_regression_model, 'random_forest':random_forest_model }
             c1=0 ###compteur pour la methode logistic regression
             c2=0 ##compteur pour la methode Random forest
             if self.method_comparison(self.model1[k],self.model2[k])=='logistic regression':
@@ -299,7 +299,7 @@ class Regression ():
             corr = scipy.stats.pearsonr(y_test, y_pred)[0]
             d_regression = {'r2': r2, 'rmse': RMSE, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr, 'l_reg':l_reg }
             self.dict_regression[k] = d_regression
-            self.coefficients[k] = coeff_df
+            self.coefficients[k] = regressor
         
         
         
@@ -314,4 +314,36 @@ if __name__ == '__main__':
     regression = Regression ()
     classification.main ()
     regression.main()
+    best_model = 'random_forest' #a determiner 
+    
+    
+    
+    Supply = pd.DataFrame (data = storage_data['SF - UGS Bierwang']['gasDayStartedOn'])
+    Supply['Supply'] = 0
+    ###here the foreCasting:
+    for k, v in storage_data.items():
+            dataFrame = storage_data [k]
+            dataFrame = dataFrame[dataFrame.NW_b != 0]
+            feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
+            X = dataFrame[feature_cols] # Features
+            X.dropna()
+
+            
+            regressor = classification.coefficients[k][best_model]
+            
+            #coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
+            
+            y_pred = regressor.predict(X)
+            
+            
+            
+            linear_regressor = regression.coefficients[k]
+            NW = linear_regressor.predict (X)
+            NW= np.maximum (NW, np.zeros(NW.size))
+            dataFrame['NW'] = NW
+            f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
+            f.fillna(0, inplace = True)
+            f['Supply'] = f['Supply'] + f['NW']
+            keys =['gasDayStartedOn', 'Supply']
+            Supply = f [keys]
  
