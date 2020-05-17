@@ -252,11 +252,12 @@ class Regression ():
         self.dict_regression = dict ()
         self.coefficients = dict ()
     
-    def main ():
+    def main (self):
         storage_data = self.Storages
         for k, v in storage_data.items():
             dataFrame = storage_data [k]
             dataFrame = dataFrame[dataFrame.NW_b != 0]
+            feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
             X = dataFrame[feature_cols] # Features
             X.dropna()
             y = dataFrame['NW'] # Target variable
