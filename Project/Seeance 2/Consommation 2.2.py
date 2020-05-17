@@ -258,6 +258,7 @@ class Regression ():
             dataFrame = storage_data [k]
             dataFrame = dataFrame[dataFrame.NW_b != 0]
             feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
+            global X,y
             X = dataFrame[feature_cols] # Features
             X.dropna()
             y = dataFrame['NW'] # Target variable
@@ -274,7 +275,8 @@ class Regression ():
             regressor = LinearRegression()  
             l_reg = regressor.fit(X_train, y_train)
             
-            coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
+            #coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
+            coeff_df = regressor.coef_
             
             y_pred = regressor.predict(X_test)
             
@@ -303,7 +305,7 @@ class Regression ():
         
         
         
-
+X, y = 0,0
 
 if __name__ == '__main__':
     seuil = 45
@@ -312,4 +314,4 @@ if __name__ == '__main__':
     regression = Regression ()
     classification.main ()
     regression.main()
-    global X,y
+ 
