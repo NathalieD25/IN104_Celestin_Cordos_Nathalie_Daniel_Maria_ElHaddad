@@ -179,9 +179,9 @@ class Classification ():
                 if d2['method name']=='random forest':
                     rf+=1
         if lgr>rf:
-            method='logistic regression'
+            method='logistic_regression'
         else:
-            method='random forest'
+            method='random_forest'
         return method 
 ###############END OF THE RANDOM FOREST PROGRAM ###################################
 
@@ -214,9 +214,11 @@ class Classification ():
             #comparaison des modeles
         if c1>c2:
             print ("The logistic regression is better")
+            self.best_model = 'logistic_refression'
+            
         if c2>c1:
             print ("The random forest is better")
-    
+            self.best_model = 'random_forest'
         
         
 class Regression ():
