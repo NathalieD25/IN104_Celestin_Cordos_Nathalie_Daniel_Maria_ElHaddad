@@ -113,12 +113,10 @@ class Classification ():
         RSEED = 50
         train, test, train_labels, test_labels = train_test_split(x,y,test_size = 0.2, random_state = RSEED)
     
-    # Imputation of missing values
-        train = train.dropna()
-        test = test.dropna()
+
+
     
-    # Features for feature importances
-        #features = list(train.columns)
+
     
     # Create the model with 100 trees
         model = RandomForestClassifier(n_estimators=100,
@@ -280,7 +278,7 @@ class Regression ():
         
 X, y = 0,0
 
-#if __name__ == '__main__':
+
 seuil = 45
 storage_data = initialisation_data ()
 classification = Classification ()
