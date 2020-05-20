@@ -114,8 +114,8 @@ class Classification ():
         train, test, train_labels, test_labels = train_test_split(x,y,test_size = 0.2, random_state = RSEED)
     
     # Imputation of missing values
-        train = np.nan_to_num(train)
-        test = np.nan_to_num(test)
+        train = train.dropna()
+        test = test.dropna()
     
     # Features for feature importances
         #features = list(train.columns)
