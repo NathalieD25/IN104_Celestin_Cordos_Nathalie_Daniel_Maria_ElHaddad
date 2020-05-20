@@ -25,6 +25,7 @@ from sklearn.linear_model import LinearRegression
 import dfply
 import itertools
 import scipy
+import myConfig
 
 
 
@@ -278,43 +279,43 @@ class Regression ():
         
 X, y = 0,0
 
-
-seuil = 45
-storage_data = initialisation_data ()
-classification = Classification ()
-regression = Regression ()
-classification.main ()
-regression.main()
-best_model = 'random_forest' #a determiner 
-
-
-
-Supply = pd.DataFrame (data = storage_data['SF - UGS Bierwang']['gasDayStartedOn'])
-Supply['Supply'] = 0
-###here the foreCasting:
-for k, v in storage_data.items():
-        dataFrame = storage_data [k]
-        dataFrame = dataFrame[dataFrame.NW_b != 0]
-        feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
-        X = dataFrame[feature_cols] # Features
-        X.dropna()
-
-        
-        regressor = classification.coefficients[k][best_model]
-        
-        #coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
-        
-        y_pred = regressor.predict(X)
-        
-        
-        
-        linear_regressor = regression.coefficients[k]
-        NW = linear_regressor.predict (X)
-        NW= np.maximum (NW, np.zeros(NW.size))
-        dataFrame['NW'] = NW
-        f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
-        f.fillna(0, inplace = True)
-        f['Supply'] = f['Supply'] + f['NW']
-        keys =['gasDayStartedOn', 'Supply']
-        Supply = f [keys]
- 
+if __name__ == '__main__':
+    seuil = 45
+    storage_data = initialisation_data ()
+    classification = Classification ()
+    regression = Regression ()
+    classification.main ()
+    regression.main()
+    best_model = 'random_forest' #a determiner 
+    
+    
+    global Supply
+    Supply = pd.DataFrame (data = storage_data['SF - UGS Bierwang']['gasDayStartedOn'])
+    Supply['Supply'] = 0
+    ###here the foreCasting:
+    for k, v in storage_data.items():
+            dataFrame = storage_data [k]
+            dataFrame = dataFrame[dataFrame.NW_b != 0]
+            feature_cols = ['NW_Lagged', 'FSW1', 'FSW2']
+            X = dataFrame[feature_cols] # Features
+            X.dropna()
+    
+            
+            regressor = classification.coefficients[k][best_model]
+            
+            #coeff_df = pd.DataFrame(regressor.coef_, X.columns, columns=['Coefficient'])  
+            
+            y_pred = regressor.predict(X)
+            
+            
+            
+            linear_regressor = regression.coefficients[k]
+            NW = linear_regressor.predict (X)
+            NW= np.maximum (NW, np.zeros(NW.size))
+            dataFrame['NW'] = NW
+            f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
+            f.fillna(0, inplace = True)
+            f['Supply'] = f['Supply'] + f['NW']
+            keys =['gasDayStartedOn', 'Supply']
+            Supply = f [keys]
+    myConfig.Supply = Supply
