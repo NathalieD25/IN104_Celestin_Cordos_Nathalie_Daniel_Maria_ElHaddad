@@ -1,7 +1,9 @@
 
 import dfply
-import DEMAND
 import supply
+import DEMAND
+import pandas as pd
+
 import os
 from openpyxl.workbook import Workbook
 def market_decision(DF):
@@ -21,14 +23,18 @@ def market_decision(DF):
     return decision
 
 def main():
-    DF_demand=df
-    DF_supply=Supply
+    DF_demand=DEMAND.df
+    DF_supply=supply.Supply
     DF_supply.rename(columns={"gasDayStartedOn":"Date"},inplace=True)
     DF_demand['Date'] = pd.to_datetime(DF_demand['Date'])
     DF_supply['Date'] = pd.to_datetime(DF_supply['Date'])
 
-    balance=DF_demand>> inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
+    balance=DF_demand>> pd.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
     c=market_decision(balance)
     balance["Decision"]=market_decision(balance)
     balance.to_excel("Balance.xlsx")
     print(balance)
+
+
+
+main ()
