@@ -2,6 +2,7 @@ import dfply
 import supply
 import DEMAND
 import pandas as pd
+import myConfig 
 
 import os
 from openpyxl.workbook import Workbook
@@ -23,7 +24,7 @@ def market_decision(DF):
 
 def main():
     DF_demand=DEMAND.df
-    DF_supply=supply.Supply
+    DF_supply=myConfig.Supply
     DF_supply.rename(columns={"gasDayStartedOn":"Date"},inplace=True)
     DF_demand['Date'] = pd.to_datetime(DF_demand['Date'])
     DF_supply['Date'] = pd.to_datetime(DF_supply['Date'])
