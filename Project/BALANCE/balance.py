@@ -1,4 +1,3 @@
-
 import dfply
 import supply
 import DEMAND
@@ -8,7 +7,7 @@ import os
 from openpyxl.workbook import Workbook
 def market_decision(DF):
     decision=[]
-    for i in range (0,len(balance)):
+    for i in range (0,len(DF)):
         if DF['Supply'][i]>DF['Demand'][i]:
             decision.append("SELL")
 
@@ -29,7 +28,7 @@ def main():
     DF_demand['Date'] = pd.to_datetime(DF_demand['Date'])
     DF_supply['Date'] = pd.to_datetime(DF_supply['Date'])
 
-    balance=DF_demand>> pd.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
+    balance=DF_demand>> dfply.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
     c=market_decision(balance)
     balance["Decision"]=market_decision(balance)
     balance.to_excel("Balance.xlsx")

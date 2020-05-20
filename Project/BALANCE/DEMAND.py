@@ -216,71 +216,71 @@ class optimize_sigmoid:
         return t
 
 #If you have filled correctly the following code will run without an issue        
-if __name__ == '__main__':
+#if __name__ == '__main__':
 
-    #set working directory
-    set_wd(r"C:\Users\Nathalie\Documents\ENSTA\IN104\IN104_Celestin_Cordos_Nathalie_Daniel_Maria_ElHaddad\Project\supply")
+#set working directory
+set_wd(r"D:\Documents\GitHub\IN104_Celestin_Cordos_Nathalie_Daniel_Maria_ElHaddad\Project\BALANCE")
 
-    #1) import consumption data and plot it
-    conso = import_csv()
+#1) import consumption data and plot it
+conso = import_csv()
 
-    #2) work on consumption data (non-linear regression)
-    #2)1. Plot consumption as a function of temperature    
+#2) work on consumption data (non-linear regression)
+#2)1. Plot consumption as a function of temperature    
    
-    scatter_plot(conso)        
+scatter_plot(conso)        
 
-    #2)2. optimize the parameters
-    sig = optimize_sigmoid(conso)
-    sig.optimize()
-    c = sig.create_consumption()
+#2)2. optimize the parameters
+sig = optimize_sigmoid(conso)
+sig.optimize()
+c = sig.create_consumption()
 #    print(sig)
 
 
-    #2)3. check the new fit
+#2)3. check the new fit
 
-    # These are the 3 ways to access a protected attribute, it works the same for a protected method
-    # An attribute/method is protected when it starts with 2 underscores "__"
-    # Protection is good to not falsy create change
-    
-    print(
-            [
-            sig.__dict__['_optimize_sigmoid__corr'],
-            sig.__dict__['_optimize_sigmoid__rmse'],
-            sig.__dict__['_optimize_sigmoid__nrmse'],
-            sig.__dict__['_optimize_sigmoid__anrmse']
-            ]
-        )
+# These are the 3 ways to access a protected attribute, it works the same for a protected method
+# An attribute/method is protected when it starts with 2 underscores "__"
+# Protection is good to not falsy create change
 
-    print(
-            [
-            sig._optimize_sigmoid__corr,
-            sig._optimize_sigmoid__rmse,
-            sig._optimize_sigmoid__nrmse,
-            sig._optimize_sigmoid__anrmse
-            ]
-        )
+print(
+        [
+        sig.__dict__['_optimize_sigmoid__corr'],
+        sig.__dict__['_optimize_sigmoid__rmse'],
+        sig.__dict__['_optimize_sigmoid__nrmse'],
+        sig.__dict__['_optimize_sigmoid__anrmse']
+        ]
+    )
 
-    print(
-            [
-            getattr(sig, "_optimize_sigmoid__corr"),
-            getattr(sig, "_optimize_sigmoid__rmse"),
-            getattr(sig, "_optimize_sigmoid__nrmse"),
-            getattr(sig, "_optimize_sigmoid__anrmse")
-            ]
-        )
-    
-    print(sig.fit_metrics())
-    c.sigmoid(True)
-    print(c)
-    
-    #Added on 5/17/2020
-    #creating an array with the coefficients of the sigmoid
-    sigmoid_coeff=consumption(c.a,c.b,c.c,c.d)
-    Demand=consumption.get_consumption(sigmoid_coeff,conso['Actual'])
-    data = {'Date':conso['Date'], 'Demand':Demand}
-    df=pd.DataFrame(data)
-    #3) If time allows do TSA on actual temperature
-    #3)1. Check trend (and Remove it)
-    #3)2. Check Seasonality (Normal Temperature)
-    #3)3. Model stochastic part that is left with ARIMA
-    #3)4. Use this to forecast consumption over N days
+print(
+        [
+        sig._optimize_sigmoid__corr,
+        sig._optimize_sigmoid__rmse,
+        sig._optimize_sigmoid__nrmse,
+        sig._optimize_sigmoid__anrmse
+        ]
+    )
+
+print(
+        [
+        getattr(sig, "_optimize_sigmoid__corr"),
+        getattr(sig, "_optimize_sigmoid__rmse"),
+        getattr(sig, "_optimize_sigmoid__nrmse"),
+        getattr(sig, "_optimize_sigmoid__anrmse")
+        ]
+    )
+
+print(sig.fit_metrics())
+c.sigmoid(True)
+print(c)
+
+#Added on 5/17/2020
+#creating an array with the coefficients of the sigmoid
+sigmoid_coeff=consumption(c.a,c.b,c.c,c.d)
+Demand=consumption.get_consumption(sigmoid_coeff,conso['Actual'])
+data = {'Date':conso['Date'], 'Demand':Demand}
+df=pd.DataFrame(data)
+#3) If time allows do TSA on actual temperature
+#3)1. Check trend (and Remove it)
+#3)2. Check Seasonality (Normal Temperature)
+#3)3. Model stochastic part that is left with ARIMA
+#3)4. Use this to forecast consumption over N days
