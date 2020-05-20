@@ -105,6 +105,43 @@ class Classification ():
 ####################END OF THE LOGISTIC REGRESSION #############################
 
 
+#    def evaluate_model(predictions, probs, train_predictions, train_probs):
+#        # """Compare machine learning model to baseline performance.
+#        # Computes statistics and shows ROC curve."""
+#        #
+#            baseline = {}
+#    
+#            baseline['recall'] = recall_score(test_labels,
+#                                         [1 for _ in range(len(test_labels))])
+#            baseline['precision'] = precision_score(test_labels,
+#                                          [1 for _ in range(len(test_labels))])
+#            baseline['roc'] = 0.5
+#    
+#            results = {}
+#    
+#            results['recall'] = recall_score(test_labels, predictions)
+#            results['precision'] = precision_score(test_labels, predictions)
+#            results['roc'] = roc_auc_score(test_labels, probs)
+#    
+#            train_results = {}
+#            train_results['recall'] = recall_score(train_labels, train_predictions)
+#            train_results['precision'] = precision_score(train_labels, train_predictions)
+#            train_results['roc'] = roc_auc_score(train_labels, train_probs)
+#    
+#            for metric in ['recall', 'precision', 'roc']:
+#                    print(f'{metric.capitalize()} Baseline: {round(baseline[metric], 2)} Test: {round(results[metric], 2)} Train: {round(train_results[metric], 2)}')
+#    
+#        # Calculate false positive rates and true positive rates
+#            base_fpr, base_tpr, _ = roc_curve(test_labels, [1 for _ in range(len(test_labels))])
+#            model_fpr, model_tpr, _ = roc_curve(test_labels, probs)
+#        cm = metrics.confusion_matrix(test_labels, rf_predictions)
+#        d2= {"recall": metrics.recall_score(test_labels, rf_predictions), 
+#             "neg_recall": cm[1,1]/(cm[0,1] + cm[1,1]), 
+#             "confusion": cm,
+#             "precision": metrics.precision_score(test_labels, rf_predictions), 
+#             "neg_precision":cm[1,1]/cm.sum(axis=1)[1], 
+#             "roc": metrics.roc_auc_score(test_labels, rf_predictions),"method name": 'random forest'} #ajouter le modele 
+#        return d2, model
 
 
 ##########RANDOM FOREST PROGRAM #######################
