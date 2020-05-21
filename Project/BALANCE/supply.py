@@ -253,10 +253,10 @@ class Regression ():
             df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
             df1 = df.head(25)
             
-            df1.plot(kind='bar',figsize=(10,8))
-            plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
-            plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
-            plt.show()
+#            df1.plot(kind='bar',figsize=(10,8))
+#            plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+#            plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+#            plt.show()
             
             #np.mean ()
             RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_pred))   
