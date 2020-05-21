@@ -147,9 +147,6 @@ class Classification ():
     
      
     
-    # Plot formatting
-        plt.style.use('fivethirtyeight')
-        plt.rcParams['font.size'] = 18
     
         
         cm = metrics.confusion_matrix(test_labels, rf_predictions)
