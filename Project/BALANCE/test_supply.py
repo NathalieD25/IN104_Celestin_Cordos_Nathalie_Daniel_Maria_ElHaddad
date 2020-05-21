@@ -4,6 +4,9 @@ import pandas
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 
+
+
+
 class test_Classification (unittest.TestCase) :
 
     classification = supply.Classification ()
