@@ -291,6 +291,15 @@ sigmoid_coeff=consumption(c.a,c.b,c.c,c.d)
 Demand=consumption.get_consumption(sigmoid_coeff,conso['Actual'])
 data = {'Date':conso['Date'], 'Demand':Demand,'Demand_real':conso['LDZ']}
 df=pd.DataFrame(data)
+##plot the comparison between the real demand and the demand that was created using the optimize method
+#df_plot= pd.DataFrame({'Date':conso['Date'], 'Demand':Demand,'Demand_real':conso['LDZ']})
+#df1 = df_plot.head(36) ##the 36 is a parameter we can change we only chose 36 to have a clear view over the 35 first days 
+            
+#df1.plot(kind='bar',figsize=(10,8))
+#plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+#plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+
+plt.show()
 #3) If time allows do TSA on actual temperature
 #3)1. Check trend (and Remove it)
 #3)2. Check Seasonality (Normal Temperature)
