@@ -292,7 +292,7 @@ regression.main()
 best_model = 'random_forest' #a determiner 
 
 
-global Supply
+
 Supply = pd.DataFrame (data = storage_data['SF - UGS Bierwang']['gasDayStartedOn'])
 Supply['Supply'] = 0
 ###here the foreCasting:
@@ -313,12 +313,12 @@ for k, v in storage_data.items():
         
         
         linear_regressor = regression.coefficients[k]
-        NW = linear_regressor.predict (X)
-        NW= np.maximum (NW, np.zeros(NW.size))
-        dataFrame['NW'] = NW
+        NW_predict = linear_regressor.predict (X)
+        NW_predict= np.maximum (NW_predict, np.zeros(NW.size))
+        dataFrame['NW_predict'] = NW_predict
         f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
         f.fillna(0, inplace = True)
-        f['Supply'] = f['Supply'] + f['NW']
+        f['Supply'] = f['Supply'] + f['NW_predict']
         keys =['gasDayStartedOn', 'Supply']
         Supply = f [keys]
 
