@@ -295,6 +295,7 @@ best_model = 'random_forest' #a determiner
 
 Supply = pd.DataFrame (data = storage_data['SF - UGS Bierwang']['gasDayStartedOn'])
 Supply['Supply'] = 0
+Supply['Supply_real'] = 0
 ###here the foreCasting:
 for k, v in storage_data.items():
         dataFrame = storage_data [k]
