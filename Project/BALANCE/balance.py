@@ -8,6 +8,7 @@ import os
 from openpyxl.workbook import Workbook
 def market_decision(DF):
     decision=[]
+    real_decision=[]
     for i in range (0,len(DF)):
         if DF['Supply'][i]>DF['Demand'][i]:
             decision.append("SELL")
@@ -26,7 +27,7 @@ def market_decision(DF):
         if DF['Supply_real'][i]==DF['Demand_real'][i]:
             real_decision.append("FLAT")
 
-    return decision
+    return decision,real_decision
 
 def main():
     DF_demand=DEMAND.df
