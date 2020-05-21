@@ -277,7 +277,7 @@ print(c)
 #creating an array with the coefficients of the sigmoid
 sigmoid_coeff=consumption(c.a,c.b,c.c,c.d)
 Demand=consumption.get_consumption(sigmoid_coeff,conso['Actual'])
-data = {'Date':conso['Date'], 'Demand':Demand}
+data = {'Date':conso['Date'], 'Demand':Demand,'Demand_real':conso['LDZ']}
 df=pd.DataFrame(data)
 #3) If time allows do TSA on actual temperature
 #3)1. Check trend (and Remove it)
