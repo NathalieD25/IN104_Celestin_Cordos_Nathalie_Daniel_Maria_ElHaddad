@@ -320,6 +320,7 @@ for k, v in storage_data.items():
         f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
         f.fillna(0, inplace = True)
         f['Supply'] = f['Supply'] + f['NW_predict']
-        keys =['gasDayStartedOn', 'Supply']
+        f['Supply_real']=f['Supply_real']+f['NW']
+        keys =['gasDayStartedOn', 'Supply','Supply_real']
         Supply = f [keys]
 
