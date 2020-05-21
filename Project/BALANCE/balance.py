@@ -40,11 +40,11 @@ def main():
     balance=DF_demand>> dfply.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
     balance["Decision"]=market_decision(balance)[0]
     balance["Decision_real"]=market_decision(balance)[1]
-    df = balance[(df.T != 0).any(1)]
+    balance = balance[(balance.T != 0).all()]
 #    balance.replace(0, np.nan, inplace = True)
 #    balance.dropna(how='all', axis=0, inplace = True)
 #    balance.replace(np.nan, 0, inplace = True)
-    df.to_csv('final_balance.csv',index=True)
+    balance.to_csv('final_balance.csv',index=True)
    
     
     
