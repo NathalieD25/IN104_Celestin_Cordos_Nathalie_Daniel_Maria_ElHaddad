@@ -67,6 +67,7 @@ class test_Regression ():
             self.assertIn ('anrmse',v) 
             self.assertIn ('corr',v)
             self.assertIn ('l_reg',v) 
+            
 
 
 
