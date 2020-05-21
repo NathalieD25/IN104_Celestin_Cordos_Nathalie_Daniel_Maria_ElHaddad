@@ -44,6 +44,14 @@ def main():
 #    balance.replace(0, np.nan, inplace = True)
 #    balance.dropna(how='all', axis=0, inplace = True)
 #    balance.replace(np.nan, 0, inplace = True)
+    RMSE_d = np.sqrt(metrics.mean_squared_error(balance['Demand_real'], balance['Demand'])) 
+    averageValueConsumption_d = np.mean (balance['Demand_real'])
+    maxValueConsumption_d = np.max (balance['Demand_real'])
+    minValueConsumption_d = np.min (balance['Demand_real'])
+    ANRMSE = RMSE_d/averageValueConsumption_d
+    NRMSE = RMSE_d/(maxValueConsumption_d - minValueConsumption_d)
+    corr = scipy.stats.pearsonr(balance['Demand_real'],balance['Demand'])[0]
+    d_regression = {'rmse': RMSE_d, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr }
     balance.to_csv('final_balance.csv',index=True)
    
     
