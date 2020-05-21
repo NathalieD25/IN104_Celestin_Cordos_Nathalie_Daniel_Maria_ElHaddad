@@ -314,7 +314,7 @@ for k, v in storage_data.items():
         
         linear_regressor = regression.coefficients[k]
         NW_predict = linear_regressor.predict (X)
-        NW_predict= np.maximum (NW_predict, np.zeros(NW.size))
+        NW_predict= np.maximum (NW_predict, np.zeros(NW_predict.size))
         dataFrame['NW_predict'] = NW_predict
         f = pd.merge(Supply,dataFrame, on='gasDayStartedOn', how= 'left')
         f.fillna(0, inplace = True)
