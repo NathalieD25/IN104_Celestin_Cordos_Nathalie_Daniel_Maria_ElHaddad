@@ -59,6 +59,18 @@ def import_csv(f_name = "DE.csv", delimeter = ";", plot = True):
 
 #This function creates a scatter plot given a DataFrame and an x and y column
 def scatter_plot(dataframe , x = "Actual", y = "LDZ", col = "red"):
+    if not isinstance(dataframe, pd.DataFrame):
+        raise TypeError(
+            '\'{}\' is not of type dataframe.'.format(dataframe))
+    if not isinstance(x, str):
+        raise TypeError(
+            '\'{}\' is not of type String.'.format(x))
+    if not isinstance(y, str):
+        raise TypeError(
+            '\'{}\' is not of type String.'.format(y))
+    if not isinstance(col, str):
+        raise TypeError(
+            '\'{}\' is not of type String.'.format(str))
     X,Y = list(dataframe [x]), list( dataframe[y])
     ####New
     plt.title('The consumption as a function of temperature')
