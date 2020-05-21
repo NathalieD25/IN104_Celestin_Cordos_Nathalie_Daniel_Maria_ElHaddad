@@ -19,6 +19,12 @@ def market_decision(DF):
         if DF['Supply'][i]==DF['Demand'][i]:
             #print ("On %s : decision is FLAT" %(DF['Date'][i]))
             decision.append("FLAT")
+        if DF['Supply_real'][i]>DF['Demand_real'][i]:
+            real_decision.append("SELL")
+        if DF['Supply_real'][i]<DF['Demand_real'][i]:
+            real_decision.append("BUY")
+        if DF['Supply_real'][i]==DF['Demand_real'][i]:
+            real_decision.append("FLAT")
 
     return decision
 
@@ -30,9 +36,10 @@ def main():
     DF_supply['Date'] = pd.to_datetime(DF_supply['Date'])
 
     balance=DF_demand>> dfply.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
-    c=market_decision(balance)
-    balance["Decision"]=market_decision(balance)
-    balance.to_excel("Balance.xlsx")
+    balance["Decision"]=market_decision(balance)[0]
+    balance["Decision_real"]=market_decision(balance)[1]
+    
+    balance.to_csv('final_balance.csv',index=True)
     print(balance)
 
 
