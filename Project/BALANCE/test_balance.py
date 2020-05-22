@@ -21,8 +21,8 @@ class test_balance (unittest.TestCase) :
         d = {'Supply': Supply, 'Demand': Demand, 'Supply_real': Supply, 'Demand_real':Demand}
         DF = pd.DataFrame(data = d)
         balance.market_decision (DF)
-        decision = DF['Decision']
-        real_decision = DF['Decision_real']
+        decision =list( DF['Decision'])
+        real_decision = list(DF['Decision_real'])
         solution = ['BUY' for i in range (int((n-1)/2))]
         solution.append ('FLAT')
         solution = solution + ['SELL' for i in range( int(((n-1)/2)))]
