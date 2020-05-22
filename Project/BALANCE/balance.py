@@ -17,26 +17,27 @@ from openpyxl.workbook import Workbook
 def market_decision(DF):
     decision=[]
     real_decision=[]
+    DF['Decision'] = 0
+    DF['Decision_real'] = 0
     for i in range (0,len(DF)):
         if DF['Supply'][i]>DF['Demand'][i]:
-            decision.append(1)
+            DF['Decision'][i] = 1
 
             #print ("On %s : decision is SELL" %(DF['Date'][i]))
         if DF['Supply'][i]<DF['Demand'][i]:
             #print ("On %s : decision is BUY" %(DF['Date'][i]))
-            decision.append(0)
+            DF['Decision'][i] =0
         if DF['Supply'][i]==DF['Demand'][i]:
             #print ("On %s : decision is FLAT" %(DF['Date'][i]))
-            decision.append(2)
+            DF['Decision'][i] =2
         if DF['Supply_real'][i]>DF['Demand_real'][i]:
-            real_decision.append(1)
+            DF['Decision_real'][i] =1
         if DF['Supply_real'][i]<DF['Demand_real'][i]:
-            real_decision.append(0)
+            DF['Decision_real'][i]=0
         if DF['Supply_real'][i]==DF['Demand_real'][i]:
-            real_decision.append(2)
+            DF['Decision_real'][i] = 2
         
 
-    return decision,real_decision
 
 def metrics (balance):
     RMSE_d = mean_squared_error(balance['Demand_real'], balance['Demand'])
@@ -70,8 +71,9 @@ def main():
     DF_supply['Date'] = pd.to_datetime(DF_supply['Date'])
 
     balance=DF_demand>> dfply.inner_join(DF_supply,by='Date') ##inner joining the 2 date frames
-    balance["Decision"]=market_decision(balance)[0]
-    balance["Decision_real"]=market_decision(balance)[1]
+    market_decision(balance)
+#    balance["Decision"]=market_decision(balance)[0]
+#    balance["Decision_real"]=market_decision(balance)[1]
     balance = balance[(balance.T != 0).all()]
 #    balance.replace(0, np.nan, inplace = True)
 #    balance.dropna(how='all', axis=0, inplace = True)

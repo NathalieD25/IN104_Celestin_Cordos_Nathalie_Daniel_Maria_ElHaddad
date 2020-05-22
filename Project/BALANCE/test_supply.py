@@ -33,7 +33,9 @@ class test_Classification (unittest.TestCase) :
         d, lr = self.classification.random_forest (self.x,self.y)
         self.assertIsInstance (d, dict)
         
-
+#    def test_Logistic_Regression (self):
+#        d, lr = self.classification.Logistic_Regression (self.x,self.y)
+#        self.assertIsInstance (d, dict)
         
     def test_compare_model (self):
         model1 = self.classification.model1 
