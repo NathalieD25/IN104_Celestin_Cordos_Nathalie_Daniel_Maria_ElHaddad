@@ -228,7 +228,7 @@ class optimize_sigmoid:
         return t
 
 #If you have filled correctly the following code will run without an issue        
-#if __name__ == '__main__':
+
 
 #set working directory
 set_wd(r"D:\Documents\GitHub\IN104_Celestin_Cordos_Nathalie_Daniel_Maria_ElHaddad\Project\BALANCE")

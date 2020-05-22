@@ -52,8 +52,6 @@ def split_fs( f, p):
     f['NW_Lagged'] = f['NW'].shift(1)
     f['FSW1'] = f.apply (create_fsw1, axis=1)
     f['FSW2'] = f.apply (create_fsw2, axis=1)
-    
-    ##pas compris à quoi ca servait; on les avait pas avant
     '''f['FSI1'] = f.apply (create_fsi1, axis=1)
     f['FSI2'] = f.apply (create_fsi2, axis=1)'''
     f['NW_b'] = f.apply (create_binary_nw, axis=1)
@@ -235,7 +233,7 @@ class Regression ():
         
            
             
-            
+            #Affichage:
             #plt.figure(figsize=(15,10))
             #plt.tight_layout()
             #seabornInstance.distplot(dataset['quality'])
@@ -252,14 +250,14 @@ class Regression ():
             
             df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
             df1 = df.head(25)
-            
+            # Affichage :
 #            df1.plot(kind='bar',figsize=(10,8))
 #            plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
 #            plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 #            plt.show()
             
             #np.mean ()
-            RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_pred))   
+            RMSE = metrics.mean_squared_error(y_test, y_pred)
             averageValueConsumption = np.mean (y_test)
             maxValueConsumption = np.max (y_test)
             minValueConsumption = np.min (y_test)
@@ -275,9 +273,7 @@ class Regression ():
         
         
         
-X, y = 0,0
-
-#if __name__ == '__main__':
+#Core of the code
 seuil = 45
 storage_data = initialisation_data ()
 classification = Classification ()

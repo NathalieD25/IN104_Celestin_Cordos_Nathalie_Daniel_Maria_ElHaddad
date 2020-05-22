@@ -7,6 +7,10 @@ from sklearn.metrics import mean_squared_error
 import scipy
 
 
+from sklearn.metrics import confusion_matrix
+
+
+
 
 import os
 from openpyxl.workbook import Workbook
@@ -15,26 +19,27 @@ def market_decision(DF):
     real_decision=[]
     for i in range (0,len(DF)):
         if DF['Supply'][i]>DF['Demand'][i]:
-            decision.append("SELL")
+            decision.append(1)
 
             #print ("On %s : decision is SELL" %(DF['Date'][i]))
         if DF['Supply'][i]<DF['Demand'][i]:
             #print ("On %s : decision is BUY" %(DF['Date'][i]))
-            decision.append("BUY")
+            decision.append(0)
         if DF['Supply'][i]==DF['Demand'][i]:
             #print ("On %s : decision is FLAT" %(DF['Date'][i]))
-            decision.append("FLAT")
+            decision.append(2)
         if DF['Supply_real'][i]>DF['Demand_real'][i]:
-            real_decision.append("SELL")
+            real_decision.append(1)
         if DF['Supply_real'][i]<DF['Demand_real'][i]:
-            real_decision.append("BUY")
+            real_decision.append(0)
         if DF['Supply_real'][i]==DF['Demand_real'][i]:
-            real_decision.append("FLAT")
+            real_decision.append(2)
+        
 
     return decision,real_decision
 
 def metrics (balance):
-    RMSE_d = np.sqrt(mean_squared_error(balance['Demand_real'], balance['Demand'])) 
+    RMSE_d = mean_squared_error(balance['Demand_real'], balance['Demand'])
     averageValueConsumption_d = np.mean (balance['Demand_real'])
     maxValueConsumption_d = np.max (balance['Demand_real'])
     minValueConsumption_d = np.min (balance['Demand_real'])
@@ -43,7 +48,7 @@ def metrics (balance):
     corr = scipy.stats.pearsonr(balance['Demand_real'],balance['Demand'])[0]
     d_demand = {'rmse': RMSE_d, 'nrmse': NRMSE, 'anrmse': ANRMSE, 'corr': corr }
     
-    RMSE_s = np.sqrt(mean_squared_error(balance['Supply_real'], balance['Supply'])) 
+    RMSE_s = mean_squared_error(balance['Supply_real'], balance['Supply']) 
     averageValueConsumption_s = np.mean (balance['Supply_real'])
     maxValueConsumption_s = np.max (balance['Supply_real'])
     minValueConsumption_s = np.min (balance['Supply_real'])
@@ -76,9 +81,10 @@ def main():
     balance.to_csv('final_balance.csv',index=True)
     d_demand, d_supply = metrics (balance)
     print(balance)
-    print (d_demand)
-    print (d_supply)
-    
+    print ('demand metrics : ', d_demand)
+    print ('supply metrics : ',  d_supply)
+    cm=confusion_matrix(balance ['Decision'].values, balance['Decision_real'].values)
+    print (cm)
     
    
     
